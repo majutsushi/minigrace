@@ -19,7 +19,13 @@ import util
 // both a value (the condition) and a "body", for example. None of the nodes
 // are particularly notable in any way.
 
+type ForNode = {
+    forNodeID
+    value
+    body
+}
 class forNode.new(over, body') {
+    def forNodeID = 1
     def kind = "for"
     def value = over
     def body = body'
@@ -53,7 +59,13 @@ class forNode.new(over, body') {
         s
     }
 }
+type WhileNode = {
+    whileNodeID
+    value
+    body
+}
 class whileNode.new(cond, body') {
+    def whileNodeID = 1
     def kind = "while"
     def value = cond
     def body = body'
@@ -94,7 +106,14 @@ class whileNode.new(cond, body') {
         s
     }
 }
+type IfNode = {
+    ifNodeID
+    value
+    thenblock
+    elseblock
+}
 class ifNode.new(cond, thenblock', elseblock') {
+    def ifNodeID = 1
     def kind = "if"
     def value = cond
     def thenblock = thenblock'
@@ -151,7 +170,15 @@ class ifNode.new(cond, thenblock', elseblock') {
         s
     }
 }
+type BlockNode = {
+    blockNodeID
+    value
+    params
+    body
+    matchingPattern
+}
 class blockNode.new(params', body') {
+    def blockNodeID = 1
     def kind = "block"
     def value = "block"
     def params = params'
@@ -224,7 +251,14 @@ class blockNode.new(params', body') {
         s
     }
 }
+type MatchCaseNode = {
+    matchCaseID
+    value
+    cases
+    elsecase
+}
 class matchCaseNode.new(matchee, cases', elsecase') {
+    def matchCaseID = 1
     def kind = "matchcase"
     def value = matchee
     def cases = cases'
@@ -272,6 +306,12 @@ class matchCaseNode.new(matchee, cases', elsecase') {
         s
     }
 }
+type MethodTypeNode = {
+    methodTypeID
+    value
+    signature
+    rtype
+}
 class methodTypeNode.new(name', signature', rtype') {
     // [signature]
     //     object {
@@ -288,6 +328,7 @@ class methodTypeNode.new(name', signature', rtype') {
     //     object {
     //         ...
     //     }
+    def methodTypeID = 1
     def kind = "methodtype"
     def value = name'
     def signature = signature'
@@ -357,7 +398,16 @@ class methodTypeNode.new(name', signature', rtype') {
         s
     }
 }
+type TypeNode = {
+    typeNodeID
+    value
+    methods
+    unionTypes
+    intersectionTypes
+    generics
+}
 class typeNode.new(name', methods') {
+    def typeNodeID = 1
     def kind = "type"
     def value = name'
     def methods = methods'
@@ -463,6 +513,13 @@ class typeNode.new(name', methods') {
         s
     }
 }
+type MethodNode = {
+    methodNodeID
+    value
+    signature
+    body
+    dtype
+}
 class methodNode.new(name', signature', body', dtype') {
     // [signature]
     //     object {
@@ -479,6 +536,7 @@ class methodNode.new(name', signature', body', dtype') {
     //     object {
     //         ...
     //     }
+    def methodNodeID = 1
     def kind = "method"
     def value = name'
     def signature = signature'
@@ -567,6 +625,11 @@ class methodNode.new(name', signature', body', dtype') {
         s
     }
 }
+type CallNode = {
+    callNodeID
+    value
+    with
+}
 class callNode.new(what, with') {
     // [with]
     //     object {
@@ -581,6 +644,7 @@ class callNode.new(what, with') {
     //     object {
     //         ...
     //     }
+    def callNodeID = 1
     def kind = "call"
     def value = what
     def with = with'
@@ -645,6 +709,12 @@ class callNode.new(what, with') {
         s
     }
 }
+type ClassNode = {
+    classNodeID
+    value
+    name
+    signature
+}
 class classNode.new(name', signature', body', superclass', constructor') {
     // [signature]
     //     object {
@@ -661,6 +731,7 @@ class classNode.new(name', signature', body', superclass', constructor') {
     //     object {
     //         ...
     //     }
+    def classNodeID = 1
     def kind = "class"
     def value = body'
     def name = name'
@@ -752,7 +823,12 @@ class classNode.new(name', signature', body', superclass', constructor') {
         s
     }
 }
+type ObjectNode = {
+    objectNodeID
+    value
+}
 class objectNode.new(body, superclass') {
+    def objectNodeID = 1
     def kind = "object"
     def value = body
     var register := ""
@@ -800,7 +876,12 @@ class objectNode.new(body, superclass') {
         s
     }
 }
+type ArrayNode = {
+    arrayNodeID
+    value
+}
 class arrayNode.new(values) {
+    def arrayNodeID = 1
     def kind = "array"
     def value = values
     var register := ""
@@ -835,7 +916,13 @@ class arrayNode.new(values) {
         s
     }
 }
+type MemberNode = {
+    memberNodeID
+    value
+    in
+}
 class memberNode.new(what, in') {
+    def memberNodeID = 1
     def kind = "member"
     var value := what
     def in = in'
@@ -866,7 +953,13 @@ class memberNode.new(what, in') {
         s
     }
 }
+type GenericNode = {
+    genericNodeID
+    value
+    params
+}
 class genericNode.new(base, params') {
+    def genericNodeID = 1
     def kind = "generic"
     def value = base
     def params = params'
@@ -900,7 +993,13 @@ class genericNode.new(base, params') {
         s
     }
 }
+type IdentifierNode = {
+    identifierNodeID
+    value
+    dtype
+}
 class identifierNode.new(n, dtype') {
+    def identifierNodeID = 1
     def kind = "identifier"
     var value := n
     var dtype := dtype'
@@ -933,7 +1032,12 @@ class identifierNode.new(n, dtype') {
         s
     }
 }
+type OctetsNode = {
+    octetsNodeID
+    value
+}
 class octetsNode.new(n) {
+    def octetsNodeID = 1
     def kind = "octets"
     def value = n
     var register := ""
@@ -948,7 +1052,12 @@ class octetsNode.new(n) {
         self.value
     }
 }
+type StringNode = {
+    stringNodeID
+    value
+}
 class stringNode.new(n) {
+    def stringNodeID = 1
     def kind = "string"
     var value := n
     var register := ""
@@ -979,7 +1088,12 @@ class stringNode.new(n) {
         s
     }
 }
+type NumNode = {
+    numNodeID
+    value
+}
 class numNode.new(n) {
+    def numNodeID = 1
     def kind = "num"
     def value = n
     var register := ""
@@ -994,7 +1108,14 @@ class numNode.new(n) {
         self.value.asString
     }
 }
+type OpNode = {
+    opNodeID
+    value
+    left
+    right
+}
 class opNode.new(op, l, r) {
+    def opNodeID = 1
     def kind = "op"
     def value = op
     def left = l
@@ -1039,7 +1160,13 @@ class opNode.new(op, l, r) {
         s
     }
 }
+type IndexNode = {
+    indexNodeID
+    value
+    index
+}
 class indexNode.new(expr, index') {
+    def indexNodeID = 1
     def kind = "index"
     def value = expr
     def index = index'
@@ -1073,7 +1200,13 @@ class indexNode.new(expr, index') {
         s
     }
 }
+type BindNode = {
+    bindNodeID
+    dest
+    value
+}
 class bindNode.new(dest', val') {
+    def bindNodeID = 1
     def kind = "bind"
     def dest = dest'
     def value = val'
@@ -1107,7 +1240,14 @@ class bindNode.new(dest', val') {
         s
     }
 }
+type DefDecNode = {
+    defDecNodeID
+    name
+    value
+    dtype
+}
 class defDecNode.new(name', val, dtype') {
+    def defDecNodeID = 1
     def kind = "defdec"
     def name = name'
     def value = val
@@ -1158,7 +1298,14 @@ class defDecNode.new(name', val, dtype') {
         s
     }
 }
+type VarDecNode = {
+    varDecNodeID
+    name
+    value
+    dtype
+}
 class varDecNode.new(name', val', dtype') {
+    def varDecNodeID = 1
     def kind = "vardec"
     def name = name'
     def value = val'
@@ -1209,7 +1356,12 @@ class varDecNode.new(name', val', dtype') {
         s
     }
 }
+type ImportNode = {
+    importNodeID
+    value
+}
 class importNode.new(name) {
+    def importNodeID = 1
     def kind = "import"
     def value = name
     var register := ""
@@ -1234,7 +1386,12 @@ class importNode.new(name) {
         s
     }
 }
+type ReturnNode = {
+    returnNodeID
+    value
+}
 class returnNode.new(expr) {
+    def returnNodeID = 1
     def kind = "return"
     def value = expr
     var register := ""
@@ -1258,7 +1415,12 @@ class returnNode.new(expr) {
         "return " ++ self.value.toGrace(depth)
     }
 }
+type InheritsNode = {
+    inheritsNodeID
+    value
+}
 class inheritsNode.new(expr) {
+    def inheritsNodeID = 1
     def kind = "inherits"
     def value = expr
     var register := ""
@@ -1363,4 +1525,416 @@ type ASTVisitor = {
      visitImport -> Boolean
      visitReturn -> Boolean
      visitInherits -> Boolean
+}
+
+method toGraceMatch(val, depth) {
+    match(val)
+        case { node : ForNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "for ({toGraceMatch(node.value, 0)}) do "
+                    s := s ++ toGraceMatch(node.body, depth)
+                    return s
+        }
+        case { node : WhileNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "while \{{toGraceMatch(node.value, depth + 1)}\} do \{"
+                    for (node.body) do { x ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(x, depth + 1)
+                    }
+                    s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : IfNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "if ({toGraceMatch(node.value, 0)}) then \{"
+                    for (node.thenblock) do { ix ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(ix, depth + 1)
+                    }
+                    if (node.elseblock.size > 0) then {
+                        s := s ++ "\n" ++ spc ++ "\} else \{"
+                        for (node.elseblock) do { ix ->
+                            s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(ix, depth + 1)
+                        }
+                    }
+                    s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : BlockNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "\{"
+                    if (node.params.size > 0) then {
+                        s := s ++ " "
+                        for (node.params.indices) do { i ->
+                            var p := node.params[i]
+                            if (node.matchingPattern != false) then {
+                                s := s ++ "(" ++ toGraceMatch(p, 0) ++ ")"
+                            } else {
+                                s := s ++ toGraceMatch(p, 0)
+                            }
+                            if (i < node.params.size) then {
+                                s := s ++ ", "
+                            } else {
+                                s := s ++ " ->"
+                            }
+                        }
+                    }
+                    for (node.body) do { mx ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(mx, depth + 1)
+                    }
+                    s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : MatchCaseNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "match(" ++ toGraceMatch(node.value, 0) ++ ")"
+                    for (node.cases) do { case ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ "case " ++ toGraceMatch(case, depth + 2)
+                    }
+                    if (node.elsecase != false) then {
+                        s := s ++ "\n" ++ spc ++ "    " ++ "else " ++ toGraceMatch(node.elsecase, depth + 2)
+                    }
+                    return s
+        }
+        case { node : MethodTypeNode ->
+                    var s := ""
+                    for (node.signature) do { part ->
+                        s := s ++ part.name
+                        if ((part.params.size > 0) | (part.vararg != false)) then {
+                            s := s ++ "("
+                            for (part.params.indices) do { pnr ->
+                                var p := part.params[pnr]
+                                s := s ++ toGraceMatch(p, depth + 1)
+                                if ((pnr < part.params.size) | (part.vararg != false)) then {
+                                    s := s ++ ", "
+                                }
+                            }
+                            if (part.vararg != false) then {
+                                s := s ++ "*" ++ part.vararg.value
+                            }
+                            s := s ++ ")"
+                        }
+                    }
+                    if (node.rtype != false) then {
+                        s := s ++ " -> " ++ toGraceMatch(node.rtype, depth + 1)
+                    }
+                    return s
+        }
+        case { node : TypeNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := ""
+                    def isanon = node.value.substringFrom(2)to(6) == "Anon_"
+                    def isadhoc = (node.value.substringFrom(1)to(6) == "Union<") |
+                                  (node.value.substringFrom(1)to(13) == "Intersection<")
+                    if (!isanon & !isadhoc) then {
+                        s := "type {node.value}"
+                        if (node.generics.size > 0) then {
+                            s := s ++ "<"
+                            for (node.generics.indices) do { i ->
+                                s := s ++ node.generics[i].value
+                                if (i < node.generics.size) then {
+                                    s := s ++ ", "
+                                }
+                            }
+                            s := s ++ ">"
+                        }
+                        s := s ++ " = "
+                    }
+                    if (!isadhoc & (node.unionTypes.size == 0) &
+                        (node.intersectionTypes.size == 0)) then {
+                        s := s ++ "\{"
+                    }
+                    // TODO: what about e.g. "(A & B) | C"?
+                    if (node.unionTypes.size > 0) then {
+                        for (node.unionTypes.indices) do { i ->
+                            s := s ++ toGraceMatch(node.unionTypes[i], 0)
+                            if (i < node.unionTypes.size) then {
+                                s := s ++ " | "
+                            }
+                        }
+                    } elseif (node.intersectionTypes.size > 0) then {
+                        for (node.intersectionTypes.indices) do { i ->
+                            s := s ++ toGraceMatch(node.intersectionTypes[i], 0)
+                            if (i < node.intersectionTypes.size) then {
+                                s := s ++ " & "
+                            }
+                        }
+                    }
+                    for (node.methods) do { mx ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(mx, depth + 1)
+                    }
+                    if (!isadhoc & (node.unionTypes.size == 0) &
+                        (node.intersectionTypes.size == 0)) then {
+                        s := s ++ "\n" ++ spc ++ "\}"
+                    }
+                    return s
+        }
+        case { node : MethodNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "method "
+                    for (node.signature) do { part ->
+                        s := s ++ part.name
+                        if ((part.params.size > 0) | (part.vararg != false)) then {
+                            s := s ++ "("
+                            for (part.params.indices) do { pnr ->
+                                var p := part.params[pnr]
+                                s := s ++ toGraceMatch(p, depth + 1)
+                                if ((pnr < part.params.size) | (part.vararg != false)) then {
+                                    s := s ++ ", "
+                                }
+                            }
+                            if (part.vararg != false) then {
+                                s := s ++ "*" ++ part.vararg.value
+                            }
+                            s := s ++ ")"
+                        }
+                    }
+                    if (node.dtype != false) then {
+                        s := s ++ " -> {toGraceMatch(node.dtype, 0)}"
+                    }
+                    s := s ++ " \{"
+                    for (node.body) do { mx ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(mx, depth + 1)
+                    }
+                    s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : CallNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := ""
+                    // only the last member is the method call we need to handle
+                    if (node.value.kind == "member") then {
+                        var member := node.value
+                        if (member.value.substringFrom(1)to(6) == "prefix") then {
+                            s := member.value.substringFrom(7)to(member.value.size)
+                            return s ++ toGraceMatch(member.in, 0)
+                        }
+                        s := toGraceMatch(member.in, 0) ++ "."
+                    }
+                    for (node.with) do { part ->
+                        s := s ++ part.name
+                        if (part.args.size > 0) then {
+                            s := s ++ "("
+                            for (part.args.indices) do { anr ->
+                                var arg := part.args[anr]
+                                s := s ++ toGraceMatch(arg, depth + 1)
+                                if (anr < part.args.size) then {
+                                    s := s ++ ", "
+                                }
+                            }
+                            s := s ++ ")"
+                        }
+                    }
+                    return s
+        }
+        case { node : ClassNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "class {toGraceMatch(node.name, 0)}"
+                    if (node.name.kind != "generic") then {
+                        // TODO generics + new-style constructors aren't possible at the moment
+                        s := s ++ "."
+                        for (node.signature) do { part ->
+                            s := s ++ part.name
+                            if ((part.params.size > 0) | (part.vararg != false)) then {
+                                s := s ++ "("
+                                for (part.params.indices) do { pnr ->
+                                    var p := part.params[pnr]
+                                    s := s ++ toGraceMatch(p, depth + 1)
+                                    if ((pnr < part.params.size) | (part.vararg != false)) then {
+                                        s := s ++ ", "
+                                    }
+                                }
+                                if (part.vararg != false) then {
+                                    s := s ++ "*" ++ part.vararg.value
+                                }
+                                s := s ++ ")"
+                            }
+                        }
+                    }
+                    s := s ++ " \{"
+                    for (node.value) do { mx ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(mx, depth + 1)
+                    }
+                    s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : ObjectNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "object \{"
+                    for (node.value) do { x ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(x, depth + 1)
+                    }
+                    s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : ArrayNode ->
+                    var s := "["
+                    for (node.value.indices) do { i ->
+                        s := s ++ toGraceMatch(node.value[i], 0)
+                        if (i < node.value.size) then {
+                            s := s ++ ", "
+                        }
+                    }
+                    s := s ++ "]"
+                    return s
+        }
+        case { node : MemberNode ->
+                    var s := ""
+                    if (node.value.substringFrom(1)to(6) == "prefix") then {
+                        s := node.value.substringFrom(7)to(node.value.size)
+                        s := s ++ " " ++ toGraceMatch(node.in, 0)
+                    } else {
+                        s := toGraceMatch(node.in, depth) ++ "." ++ node.value
+                    }
+                    return s
+        }
+        case { node : GenericNode ->
+                    var s := node.value.value ++ "<"
+                    for (node.params.indices) do { i ->
+                        s := s ++ toGraceMatch(node.params[i], 0)
+                        if (i < node.params.size) then {
+                            s := s ++ ", "
+                        }
+                    }
+                    s := s ++ ">"
+                    return s
+        }
+        case { node : IdentifierNode ->
+                    var s := node.value
+                    if (node.dtype != false) then {
+                        s := s ++ " : " ++ toGraceMatch(node.dtype, depth + 1)
+                    }
+                    return s
+        }
+        case { node : OctetsNode ->
+                    return node.value
+        }
+        case { node : StringNode ->
+                    var s := "\""
+                    for (node.value) do { c ->
+                        if (c == "\n") then {
+                            s := s ++ "\\n"
+                        } elseif (c == "\t") then {
+                            s := s ++ "\\t"
+                        } elseif (c == "\"") then {
+                            s := s ++ "\\\""
+                        } elseif (c == "\\") then {
+                            s := s ++ "\\\\"
+                        } else {
+                            s := s ++ c
+                        }
+                    }
+                    s := s ++ "\""
+                    return s
+        }
+        case { node : NumNode ->
+                    return node.value.asString
+        }
+        case { node : OpNode ->
+                    var s := ""
+                    if ((node.left.kind == "op") & (node.left.value != node.value)) then {
+                        s := "(" ++ toGraceMatch(node.left, 0) ++ ")"
+                    } else {
+                        s := toGraceMatch(node.left, 0)
+                    }
+                    if (node.value == "..") then {
+                        s := s ++ node.value
+                    } else {
+                        s := s ++ " " ++ node.value ++ " "
+                    }
+                    if ((node.right.kind == "op") & (node.right.value != node.value)) then {
+                        s := s ++ "(" ++ toGraceMatch(node.right, 0) ++ ")"
+                    } else {
+                        s := s ++ toGraceMatch(node.right, 0)
+                    }
+                    return s
+        }
+        case { node : IndexNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := toGraceMatch(node.value, depth + 1)
+                    s := s ++ "[" ++ toGraceMatch(node.index, depth + 1) ++ "]"
+                    return s
+        }
+        case { node : BindNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := toGraceMatch(node.dest, depth + 1)
+                    s := s ++ " := " ++ toGraceMatch(node.value, depth + 1)
+                    return s
+        }
+        case { node : DefDecNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "def {toGraceMatch(node.name, 0)}"
+                    if (node.dtype.value != "Dynamic") then {
+                        s := s ++ " : " ++ toGraceMatch(node.dtype, 0)
+                    }
+                    if (node.value != false) then {
+                        s := s ++ " = " ++ toGraceMatch(node.value, depth)
+                    }
+                    return s
+        }
+        case { node : VarDecNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "var {toGraceMatch(node.name, 0)}"
+                    if (node.dtype.value != "Dynamic") then {
+                        s := s ++ " : " ++ toGraceMatch(node.dtype, 0)
+                    }
+                    if (node.value != false) then {
+                        s := s ++ " := " ++ toGraceMatch(node.value, depth)
+                    }
+                    return s
+        }
+        case { node : ImportNode ->
+                    return "import " ++ toGraceMatch(node.value, depth + 1)
+        }
+        case { node : ReturnNode ->
+                    return "return " ++ toGraceMatch(node.value, depth)
+        }
+        case { node : InheritsNode ->
+                    return "inherits {toGraceMatch(node.value, 0)}"
+        }
+
+    print("Unknown node type: {val.kind}")
+
+    return ""
 }

@@ -15,7 +15,7 @@ import subtype
 
 util.parseargs
 
-def targets = ["lex", "parse", "processed-ast", "subtypematrix", "c", "js", "grace", "java"]
+def targets = ["lex", "parse", "processed-ast", "subtypematrix", "c", "js", "grace", "gracematch", "java"]
 
 if (util.target == "help") then {
     print("Valid targets:")
@@ -48,6 +48,12 @@ if (util.target == "parse") then {
 if (util.target == "grace") then {
     for (values) do { v ->
         print(v.toGrace(0))
+    }
+    sys.exit(0)
+}
+if (util.target == "gracematch") then {
+    for (values) do { v ->
+        print(ast.toGraceMatch(v, 0))
     }
     sys.exit(0)
 }
