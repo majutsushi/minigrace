@@ -46,15 +46,19 @@ if (util.target == "parse") then {
     sys.exit(0)
 }
 if (util.target == "grace") then {
+    util.log_verbose("pretty-printing Grace code.")
     for (values) do { v ->
         print(v.toGrace(0))
     }
+    util.log_verbose("done.")
     sys.exit(0)
 }
 if (util.target == "gracematch") then {
+    util.log_verbose("pretty-printing Grace code.")
     for (values) do { v ->
         print(ast.toGraceMatch(v, 0))
     }
+    util.log_verbose("done.")
     sys.exit(0)
 }
 values := typechecker.typecheck(values)
