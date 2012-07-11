@@ -1529,25 +1529,101 @@ type ASTVisitor = {
 
 method toGraceMatch(val, depth) {
     match(val)
-        case { node : ForNode ->
-                    var spc := ""
-                    for (0..(depth - 1)) do { i ->
-                        spc := spc ++ "    "
+        case { node : StringNode ->
+                    var s := "\""
+                    for (node.value) do { c ->
+                        if (c == "\n") then {
+                            s := s ++ "\\n"
+                        } elseif (c == "\t") then {
+                            s := s ++ "\\t"
+                        } elseif (c == "\"") then {
+                            s := s ++ "\\\""
+                        } elseif (c == "\\") then {
+                            s := s ++ "\\\\"
+                        } else {
+                            s := s ++ c
+                        }
                     }
-                    var s := "for ({toGraceMatch(node.value, 0)}) do "
-                    s := s ++ toGraceMatch(node.body, depth)
+                    s := s ++ "\""
                     return s
         }
-        case { node : WhileNode ->
+        case { node : OpNode ->
+                    var s := ""
+                    if ((node.left.kind == "op") & (node.left.value != node.value)) then {
+                        s := "(" ++ toGraceMatch(node.left, 0) ++ ")"
+                    } else {
+                        s := toGraceMatch(node.left, 0)
+                    }
+                    if (node.value == "..") then {
+                        s := s ++ node.value
+                    } else {
+                        s := s ++ " " ++ node.value ++ " "
+                    }
+                    if ((node.right.kind == "op") & (node.right.value != node.value)) then {
+                        s := s ++ "(" ++ toGraceMatch(node.right, 0) ++ ")"
+                    } else {
+                        s := s ++ toGraceMatch(node.right, 0)
+                    }
+                    return s
+        }
+        case { node : IdentifierNode ->
+                    var s := node.value
+                    if (node.dtype != false) then {
+                        s := s ++ " : " ++ toGraceMatch(node.dtype, depth + 1)
+                    }
+                    return s
+        }
+        case { node : BindNode ->
                     var spc := ""
                     for (0..(depth - 1)) do { i ->
                         spc := spc ++ "    "
                     }
-                    var s := "while \{{toGraceMatch(node.value, depth + 1)}\} do \{"
-                    for (node.body) do { x ->
-                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(x, depth + 1)
+                    var s := toGraceMatch(node.dest, depth + 1)
+                    s := s ++ " := " ++ toGraceMatch(node.value, depth + 1)
+                    return s
+        }
+        case { node : NumNode ->
+                    return node.value.asString
+        }
+        case { node : CallNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
                     }
-                    s := s ++ "\n" ++ spc ++ "\}"
+                    var s := ""
+                    // only the last member is the method call we need to handle
+                    if (node.value.kind == "member") then {
+                        var member := node.value
+                        if (member.value.substringFrom(1)to(6) == "prefix") then {
+                            s := member.value.substringFrom(7)to(member.value.size)
+                            return s ++ toGraceMatch(member.in, 0)
+                        }
+                        s := toGraceMatch(member.in, 0) ++ "."
+                    }
+                    for (node.with) do { part ->
+                        s := s ++ part.name
+                        if (part.args.size > 0) then {
+                            s := s ++ "("
+                            for (part.args.indices) do { anr ->
+                                var arg := part.args[anr]
+                                s := s ++ toGraceMatch(arg, depth + 1)
+                                if (anr < part.args.size) then {
+                                    s := s ++ ", "
+                                }
+                            }
+                            s := s ++ ")"
+                        }
+                    }
+                    return s
+        }
+        case { node : MemberNode ->
+                    var s := ""
+                    if (node.value.substringFrom(1)to(6) == "prefix") then {
+                        s := node.value.substringFrom(7)to(node.value.size)
+                        s := s ++ " " ++ toGraceMatch(node.in, 0)
+                    } else {
+                        s := toGraceMatch(node.in, depth) ++ "." ++ node.value
+                    }
                     return s
         }
         case { node : IfNode ->
@@ -1594,6 +1670,15 @@ method toGraceMatch(val, depth) {
                         s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(mx, depth + 1)
                     }
                     s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : IndexNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := toGraceMatch(node.value, depth + 1)
+                    s := s ++ "[" ++ toGraceMatch(node.index, depth + 1) ++ "]"
                     return s
         }
         case { node : MatchCaseNode ->
@@ -1719,37 +1804,6 @@ method toGraceMatch(val, depth) {
                     s := s ++ "\n" ++ spc ++ "\}"
                     return s
         }
-        case { node : CallNode ->
-                    var spc := ""
-                    for (0..(depth - 1)) do { i ->
-                        spc := spc ++ "    "
-                    }
-                    var s := ""
-                    // only the last member is the method call we need to handle
-                    if (node.value.kind == "member") then {
-                        var member := node.value
-                        if (member.value.substringFrom(1)to(6) == "prefix") then {
-                            s := member.value.substringFrom(7)to(member.value.size)
-                            return s ++ toGraceMatch(member.in, 0)
-                        }
-                        s := toGraceMatch(member.in, 0) ++ "."
-                    }
-                    for (node.with) do { part ->
-                        s := s ++ part.name
-                        if (part.args.size > 0) then {
-                            s := s ++ "("
-                            for (part.args.indices) do { anr ->
-                                var arg := part.args[anr]
-                                s := s ++ toGraceMatch(arg, depth + 1)
-                                if (anr < part.args.size) then {
-                                    s := s ++ ", "
-                                }
-                            }
-                            s := s ++ ")"
-                        }
-                    }
-                    return s
-        }
         case { node : ClassNode ->
                     var spc := ""
                     for (0..(depth - 1)) do { i ->
@@ -1807,95 +1861,6 @@ method toGraceMatch(val, depth) {
                     s := s ++ "]"
                     return s
         }
-        case { node : MemberNode ->
-                    var s := ""
-                    if (node.value.substringFrom(1)to(6) == "prefix") then {
-                        s := node.value.substringFrom(7)to(node.value.size)
-                        s := s ++ " " ++ toGraceMatch(node.in, 0)
-                    } else {
-                        s := toGraceMatch(node.in, depth) ++ "." ++ node.value
-                    }
-                    return s
-        }
-        case { node : GenericNode ->
-                    var s := node.value.value ++ "<"
-                    for (node.params.indices) do { i ->
-                        s := s ++ toGraceMatch(node.params[i], 0)
-                        if (i < node.params.size) then {
-                            s := s ++ ", "
-                        }
-                    }
-                    s := s ++ ">"
-                    return s
-        }
-        case { node : IdentifierNode ->
-                    var s := node.value
-                    if (node.dtype != false) then {
-                        s := s ++ " : " ++ toGraceMatch(node.dtype, depth + 1)
-                    }
-                    return s
-        }
-        case { node : OctetsNode ->
-                    return node.value
-        }
-        case { node : StringNode ->
-                    var s := "\""
-                    for (node.value) do { c ->
-                        if (c == "\n") then {
-                            s := s ++ "\\n"
-                        } elseif (c == "\t") then {
-                            s := s ++ "\\t"
-                        } elseif (c == "\"") then {
-                            s := s ++ "\\\""
-                        } elseif (c == "\\") then {
-                            s := s ++ "\\\\"
-                        } else {
-                            s := s ++ c
-                        }
-                    }
-                    s := s ++ "\""
-                    return s
-        }
-        case { node : NumNode ->
-                    return node.value.asString
-        }
-        case { node : OpNode ->
-                    var s := ""
-                    if ((node.left.kind == "op") & (node.left.value != node.value)) then {
-                        s := "(" ++ toGraceMatch(node.left, 0) ++ ")"
-                    } else {
-                        s := toGraceMatch(node.left, 0)
-                    }
-                    if (node.value == "..") then {
-                        s := s ++ node.value
-                    } else {
-                        s := s ++ " " ++ node.value ++ " "
-                    }
-                    if ((node.right.kind == "op") & (node.right.value != node.value)) then {
-                        s := s ++ "(" ++ toGraceMatch(node.right, 0) ++ ")"
-                    } else {
-                        s := s ++ toGraceMatch(node.right, 0)
-                    }
-                    return s
-        }
-        case { node : IndexNode ->
-                    var spc := ""
-                    for (0..(depth - 1)) do { i ->
-                        spc := spc ++ "    "
-                    }
-                    var s := toGraceMatch(node.value, depth + 1)
-                    s := s ++ "[" ++ toGraceMatch(node.index, depth + 1) ++ "]"
-                    return s
-        }
-        case { node : BindNode ->
-                    var spc := ""
-                    for (0..(depth - 1)) do { i ->
-                        spc := spc ++ "    "
-                    }
-                    var s := toGraceMatch(node.dest, depth + 1)
-                    s := s ++ " := " ++ toGraceMatch(node.value, depth + 1)
-                    return s
-        }
         case { node : DefDecNode ->
                     var spc := ""
                     for (0..(depth - 1)) do { i ->
@@ -1933,6 +1898,44 @@ method toGraceMatch(val, depth) {
         case { node : InheritsNode ->
                     return "inherits {toGraceMatch(node.value, 0)}"
         }
+        // The following cases are unused (bar GenericNode in a few
+        // legacy test cases)
+        case { node : GenericNode ->
+                    var s := node.value.value ++ "<"
+                    for (node.params.indices) do { i ->
+                        s := s ++ toGraceMatch(node.params[i], 0)
+                        if (i < node.params.size) then {
+                            s := s ++ ", "
+                        }
+                    }
+                    s := s ++ ">"
+                    return s
+        }
+        case { node : ForNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "for ({toGraceMatch(node.value, 0)}) do "
+                    s := s ++ toGraceMatch(node.body, depth)
+                    return s
+        }
+        case { node : WhileNode ->
+                    var spc := ""
+                    for (0..(depth - 1)) do { i ->
+                        spc := spc ++ "    "
+                    }
+                    var s := "while \{{toGraceMatch(node.value, depth + 1)}\} do \{"
+                    for (node.body) do { x ->
+                        s := s ++ "\n" ++ spc ++ "    " ++ toGraceMatch(x, depth + 1)
+                    }
+                    s := s ++ "\n" ++ spc ++ "\}"
+                    return s
+        }
+        case { node : OctetsNode ->
+                    return node.value
+        }
+
 
     print("Unknown node type: {val.kind}")
 

@@ -38,4 +38,9 @@ fullclean: buildclean
 Makefile.conf:
 	./configure
 
+togracetest: minigrace
+	./tests/harness "../minigrace" tests tograce
+togracematchtest: minigrace
+	./tests/harness "../minigrace" tests togracematch
+
 .PHONY: selfhost test buildclean fullclean

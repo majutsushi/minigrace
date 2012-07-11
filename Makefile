@@ -105,6 +105,8 @@ javajavatest: java
 	./tests/harness "../java/minigracej" tests "java -classpath .:../java"
 togracetest: minigrace
 	./tests/harness "../minigrace" tests tograce
+togracematchtest: minigrace
+	./tests/harness "../minigrace" tests togracematch
 backendtests: test javatest
 
 java: minigrace $(SOURCEFILES)
